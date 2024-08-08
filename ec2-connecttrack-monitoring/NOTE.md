@@ -108,4 +108,113 @@ update ENA module:
 https://github.com/amzn/amzn-drivers/tree/master/kernel/linux/ena
 
 ### node_exporter演示环境构建
-TBD
+
+
+#### docker-compose.yml
+
+```azure
+version: '3.8'
+
+networks:
+  monitoring:
+    driver: bridge
+
+volumes:
+  prometheus_data: {}
+  grafana_data: {}
+
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    restart: unless-stopped
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    expose:
+      - 9090
+    networks:
+      - monitoring
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    restart: unless-stopped
+    volumes:
+      - grafana_data:/var/lib/grafana
+    ports:
+      - 3000:3000
+    networks:
+      - monitoring
+```
+
+#### prometheus.yml
+
+```azure
+global:
+  scrape_interval: 1m
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'node'
+    static_configs:
+      - targets: ['<HOST IP>:9100']
+```
+
+```azure
+docker-compose up -d
+```
+
+#### Node_exporter
+
+1. Download
+
+https://prometheus.io/download/
+
+2. Install
+
+```azure
+tar xvf node_exporter-*.tar.gz
+```
+
+3. Enable and Start Node Exporter as service
+
+Create a systemd service file: /etc/systemd/system/node_exporter.service
+```azure
+[Unit]
+Description=Node Exporter
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+User=nobody
+ExecStart=/path/to/node_exporter --collector.disable-defaults --collector.ethtool
+Restart=always
+
+[Install]
+WantedBy=default.target
+
+```
+
+Enable and start the service
+```azure
+sudo systemctl daemon-reload
+sudo systemctl start node_exporter
+sudo systemctl enable node_exporter
+```
+
+Verify:
+
+```azure
+curl http://<HOST IP>:9100/metrics
+```
+
