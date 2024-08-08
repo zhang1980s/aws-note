@@ -1,11 +1,11 @@
 # EC2 connect track monitoring
 
 ## 说明
-每个EC2实例支持不同的[在线连接数](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/security-group-connection-tracking.html).
+每个EC2实例支持不同的[在线连接数](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/security-group-connection-tracking.html)。当系统繁忙超过链接数时新tcp连接将无法建立。
 
-可以通过ethtool工具从ENA模块上获取当前可用的connect track的信息，以及超出部分的信息。
+AWS EC2通过通过ethtool工具从ENA模块上获取当前可用的connect track的信息，以及超出部分的信息。下面将详细说明如何获取及监控在线连接数信息：
 
-需要确保ENA模块在2.8.1版本及以上。
+**需要确保ENA模块在2.8.1版本及以上**
 
 ```azure
 sudo ethtool -i ens5
@@ -29,7 +29,7 @@ sudo ethtool -S ens5 | grep conntrack_allowance
      conntrack_allowance_available: 307829
 ```
 
-获取当前有多少个connection
+获取当前系统有多少个连接数。
 
 ```azure
 ss -A tcp,udp state all | awk 'NR > 1 && $6 !~ /0.0.0.0:\*/ && $6 !~ /\[::\]:\*/ && $6 !~ /127.0.0.1:/ && $6 !~ /\[::ffff:127.0.0.1\]/ && $6 != "*:*" {print $6}' | wc -l
@@ -97,10 +97,15 @@ https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Agent-
 
 ## Appendix
 
+### 官方说明
 Blog:
 
 https://aws.amazon.com/blogs/networking-and-content-delivery/monitoring-ec2-connection-tracking-utilization-using-a-new-network-performance-metric/
 
+### ENA模块相关：
 update ENA module:
 
 https://github.com/amzn/amzn-drivers/tree/master/kernel/linux/ena
+
+### node_exporter演示环境构建
+TBD
