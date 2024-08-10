@@ -46,8 +46,8 @@ FROM
                     or product_instance_type like 'cache.r7g%'
                     or product_instance_type like 'cache.r6g%'
                     or product_instance_type like 'cache.c7g%'
-                ) then 'Gravton'
-                when product_product_name = 'Amazon MemoryDB' then 'Gravton'
+                ) then 'Graviton'
+                when product_product_name = 'Amazon MemoryDB' then 'Graviton'
                 when product_product_name = 'Amazon Managed Streaming for Apache Kafka'
                 and product_product_family = 'Managed Streaming for Apache Kafka (MSK)'
                 and line_item_operation = 'RunBroker'
@@ -58,7 +58,7 @@ FROM
                 when product_product_name = 'Amazon Managed Streaming for Apache Kafka'
                 and product_product_family = 'Managed Streaming for Apache Kafka (MSK)'
                 and line_item_operation = 'RunBroker'
-                and product_compute_family like 'm7g%' then 'Gravton'
+                and product_compute_family like 'm7g%' then 'Graviton'
                 else 'FIXME'
             end as cpu_type,
             CAST(NULLIF("trim"(product_vcpu), '') AS integer) vcpu,
