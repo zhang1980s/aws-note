@@ -26,7 +26,7 @@ FROM
             product_current_generation,
             case
                 when product_physical_processor like 'AMD%' then 'AMD'
-                when product_physical_processor like 'AWS%' then 'Gravton'
+                when product_physical_processor like 'AWS%' then 'Graviton'
                 when product_physical_processor like 'Intel%' then 'Intel'
                 when product_physical_processor like 'Apple%' then 'Apple'
                 when product_product_name = 'Amazon ElastiCache'
