@@ -83,14 +83,14 @@ func handler(ctx context.Context) error {
 		return fmt.Errorf("failed to list log groups: %w", err)
 	}
 
-	ticker := time.NewTicker(250 * time.Millisecond) // 4 calls per second
+	ticker := time.NewTicker(1000 * time.Millisecond) // 1 calls per second
 	defer ticker.Stop()
 
 	for _, logGroupName := range logGroups {
 		<-ticker.C // Rate limit
 
 		destinationPrefix := fmt.Sprintf("exportedlogs/%s/year=%d/month=%02d/day=%02d",
-			logGroupName[1:], // Remove leading slash
+			logGroupName[1:],
 			startTime.Year(), startTime.Month(), startTime.Day())
 
 		err := createExportTask(ctx, logGroupName, destinationBucket, destinationPrefix, startTimeMs, endTimeMs)
