@@ -16,4 +16,26 @@
 
 通过定义reservation_tag内容区分不同的预留机型。
 
+## 安装部署
+
+### 设置环境
+```
+python3 -m venv reserve_ec2
+
+source reserve_ec2/bin/activate
+
+pip3 install boto3
+```
+
+### 测试运行
+
+```
+python3 reserve_ec2.py
+```
+
+### 配置crontab
+
+```
+*/5 * * * * <my_project_venv>/bin/python3 <scriptpath>/reserve_ec2.py >> <logpath>/capacity_reservation_log_my-capacity-reservation.txt 2>&1
+```
 
