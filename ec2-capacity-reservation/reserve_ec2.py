@@ -136,7 +136,7 @@ def manage_capacity_reservation(instance_type, availability_zone_id, max_reserva
 
 if __name__ == "__main__":
     region = 'ap-east-1'
-    instance_type = "m6i.8xlarge"
+    instance_type = "m6i.16xlarge"
     availability_zone_id = "ape1-az1"
     max_reservations = 10
     counter_file_base = "/home/admin/tmp/reservation_count"  
